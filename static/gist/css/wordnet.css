@@ -1,0 +1,285 @@
+
+/* Variables */
+
+:root {
+  --primary: #ff8500; 
+  --primary-20: #ff8500cc; 
+  --secondary: #7200c3;
+  --bg: #0000000a;
+  --fg: white;
+  --shadow: #00000033;
+  --darkish: #555555;
+  --dark: #333333;
+  --darker: #222222;
+  --darkest: #111111;
+  --light: #e2e2e2;
+  --save: #42ba4f;
+
+}
+
+/* General */
+
+body {
+    background: var(--bg);
+}
+
+.main-container {
+    width: 90%;
+    margin: auto;
+}
+
+@media (min-width: 600px) {
+    .main-container {
+        width: 600px;
+        margin: auto;
+    }
+}
+
+.primary-link {
+    color:  var(--primary);
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+.primary-link:hover {
+    text-decoration: underline;
+    opacity: 1;
+}
+
+/* Navbar */
+
+#navbar {
+    background: var(--fg);
+    box-shadow: 0 1px 2px #00000033;
+}
+
+#navbar a {
+    color:  var(--dark);
+}
+
+#navbar a:hover {
+    color:  var(--primary);
+}
+
+#navbar a.active {
+    color:  var(--primary);
+}
+
+#search-btn {
+    /*color: var(--primary);*/
+    /*border-color: var(--primary);*/
+    color: var(--dark);
+    border-color: var(--dark);
+}
+
+#search-btn:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: white;
+}
+
+#search-btn:active {
+    color: white;
+    background-color: var(--primary);
+}
+
+#search-btn:focus {
+    box-shadow: 0 0 0 0.2rem var(--primary-20);
+}
+
+/* Loading */
+
+#loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 88vh;
+}
+
+#loading-spinner {
+    color: var(--primary);
+    font-size: 10px;
+    width: 5em;
+    height: 5em;
+}
+
+
+/* ==== Explorer ==== */
+
+/* --- Breadcrumbs --- */
+
+div#breadcrumb-container {
+    margin: 1px 0px;
+    background: #efefef;
+    padding: 10px;
+    border-radius: 0px 5px 5px 0px;
+    box-shadow: 0 1px 2px var(--shadow);
+    width: fit-content;
+}
+
+.breadcrumb-group {
+    display: inline;
+    margin: 0 3px;
+}
+
+span.wn-breadcrumb-selected {
+    color: var(--dark);
+}
+
+span.wn-breadcrumb {
+    color: var(--dark);
+    cursor: pointer;
+}
+
+span.wn-breadcrumb:hover {
+    color: var(--primary);
+}
+
+/* --- Containers --- */
+
+#wordnet-container {
+    position: relative;
+}
+
+#node-container {
+    position: absolute;
+}
+
+#link-container {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+svg#link-svg {
+    width: 100%;
+    height: -webkit-fill-available;
+}
+
+#synset-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 70%;
+    margin: auto;
+    min-width: 400px;
+}
+
+/* --- Synset --- */
+
+div#synset-inner {
+    box-shadow: 0 1px 2px #00000033;
+    padding: 20px;
+    border-radius: 10px;
+    background: var(--fg);
+    margin: 10px;
+}
+
+#synset-inner p {
+    margin-bottom: 0.6rem;
+}
+
+.synset-header {
+    margin-bottom: 0.2em;
+}
+
+.synset-lemma {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: var(--primary);
+}
+
+.synset-name {
+    color: var(--darkest);
+}
+
+p.synset-definition {
+    font-style: italic;
+    color: var(--dark);
+    line-height: 1.2em;
+    font-size: 0.9em;
+}
+
+span.list-divider {
+    color: var(--darkest);
+    text-decoration: none;
+}
+
+.primary-link:hover span.list-divider {
+    text-decoration: none;}
+
+/* --- Nyms --- */
+
+.nyms-container {
+    display: flex;
+    justify-content: space-around;
+    /*height: 150px;*/
+    margin: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.nym-container {
+    display: inline;
+    padding: 10px;
+    margin: 10px;
+    box-shadow: 0 1px 2px #00000033;
+    border-radius: 10px;
+    cursor: pointer;
+    background: white;
+}
+
+.nym {
+    /*cursor: pointer;*/
+}
+
+.nym:hover {
+    /*font-weight:bold;/*/
+    /*color: #FF8800;*/
+}
+
+.nym-container:hover {
+    box-shadow: 0 1px 2px #00000033;
+
+}
+
+.nym-container:hover .nym {
+    color: #FF8800;
+}
+
+
+/* Search Results */
+
+#results-container {
+    box-shadow: 0 1px 2px #00000033;
+    border-radius: 10px;
+    padding: 20px 20px 10px 20px;
+    background: var(--fg);
+    margin: 30px auto;
+}
+
+h3.subtitle {
+    margin-bottom: 0;
+    font-size: 1.5em;
+}
+
+.search-result-container {
+    padding: 10px;
+    border-top: 1px solid var(--shadow);
+    cursor: pointer;
+}
+
+.search-result-container:nth-child(1) {
+    border-top: none;
+}
+
+.search-result-container:hover {
+    background: var(--bg);
+}
+
+.search-result-title {
+    font-weight: 500;
+}

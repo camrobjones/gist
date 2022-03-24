@@ -1,0 +1,392 @@
+{% extends "gist/base.html" %}
+
+{% block content %}
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'gist/css/wordnet.css' %}">
+
+
+
+
+<div id='app'>
+
+    <nav class="navbar navbar-expand-md" id="navbar">
+      <a class="navbar-brand" href="/wordnet">Wordnet Explorer</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- <span class="navbar-toggler-icon"></span> -->
+        <i class="material-icons" id='nav-burger'>menu</i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link active" href="#"></a>
+          </li>
+        </ul>
+        <div class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" v-model="query" @keyup.enter="searchLemma">
+          <button id="search-btn" class="btn btn-outline-success my-2 my-sm-0" type="button" @click="searchLemma">Go</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Loading -->
+    <div id="loading-container" class='main-container' 
+         v-if="mode=='loading'">
+         <div id = "loading-spinner" class="spinner-border" role="status">
+           <span class="sr-only">Loading...</span>
+         </div>
+    </div>
+
+    <!-- Explore -->
+    <div id="wordnet-outer" v-if="mode=='explore'">
+
+        <div id='breadcrumb-container'>
+
+            <div v-for="ancestor in synset.ancestors" 
+                class='breadcrumb-group'>
+                <span class='breadcrumb-divider'>></span>
+                <span class='wn-breadcrumb' @click="get_synset(ancestor)">[[ancestor]]</span>
+            </div>
+
+            <div class='breadcrumb-group'>
+                <span class='breadcrumb-divider'>></span>
+                <span class='wn-breadcrumb-selected'>[[synset.name]]</span>
+            </div>
+
+        </div>
+
+        <div id="wordnet-container" class='main-container'>
+
+            <div id="node-container">
+
+                <div id='hypernyms-container' class='nyms-container'>
+                    <div v-for="(hypernym, index) in synset.hypernyms" class='hypernym-container nym-container' @click="get_synset(hypernym)"
+                    :id="'hypernym-'+index">
+                        <span class='hyponym nym' >[[hypernym]]</span>
+                    </div>
+                </div>
+
+                <div id='synset-container'>
+                    <div id='synset-inner'>
+
+                        <div class='synset-header'>
+                            <span class='synset-lemma'>
+                            [[synset.lemma]]
+                            </span>
+                            <span class='synset-name'>
+                                ([[synset.name]])
+                            </span>
+                        </div>
+                        
+                        <p class='synset-definition'>
+                            [[synset.definition]]
+                        </p>
+
+                        <!-- POS -->
+                        <p><b>Part of Speech:</b>
+                            [[synset.pos]]
+                        </p>
+
+
+                        <!-- Lemmas -->
+                        <p v-if="synset.lemmas.length > 0"><b>Lemmas:</b>
+                            <span v-for='(lemma, index) in synset.lemmas'>
+                                [[lemma]]<span v-if='index < synset.lemmas.length - 1'>;</span>
+                            </span>
+                        </p>
+
+                        <!-- Examples -->
+                        <p><b>Examples:</b>
+                            <span class='synset-example' v-for='(example, index) in synset.examples'>
+                                "[[example]]"<span v-if='index < synset.examples.length - 1'>;</span>
+                            </span>
+                        </p>
+
+                        <!-- Attributes -->
+                        <p v-if="synset.attributes.length > 0"><b>Attributes:</b>
+                            <span v-for='(key, index) in synset.attributes'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.attributes.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Causes -->
+                        <p v-if="synset.causes.length > 0"><b>Causes:</b>
+                            <span v-for='(key, index) in synset.causes'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.causes.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Entailments -->
+                        <p v-if="synset.entailments.length > 0"><b>Entailments:</b>
+                            <span v-for='(key, index) in synset.entailments'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.entailments.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Similar-Tos -->
+                        <p v-if="synset.similar_tos.length > 0"><b>Similar to:</b>
+                            <span v-for='(key, index) in synset.similar_tos'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.similar_tos.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Also See: -->
+                        <p v-if="synset.also_sees.length > 0"><b>Also See:</b>
+                            <span v-for='(key, index) in synset.also_sees'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.also_sees.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Topic Domains: -->
+                        <p v-if="synset.topic_domains.length > 0"><b>Topic Domains:</b>
+                            <span v-for='(key, index) in synset.topic_domains'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.topic_domains.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- In Topic Domains: -->
+                        <p v-if="synset.in_topic_domains.length > 0"><b>In Topic Domains:</b>
+                            <span v-for='(key, index) in synset.in_topic_domains'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.in_topic_domains.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Usage Domains: -->
+                        <p v-if="synset.usage_domains.length > 0"><b>Usage Domains:</b>
+                            <span v-for='(key, index) in synset.usage_domains'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.usage_domains.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- In Usage Domains: -->
+                        <p v-if="synset.in_usage_domains.length > 0"><b>In Usage Domains:</b>
+                            <span v-for='(key, index) in synset.in_usage_domains'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.in_usage_domains.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Region Domains: -->
+                        <p v-if="synset.region_domains.length > 0"><b>Region Domains:</b>
+                            <span v-for='(key, index) in synset.region_domains'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.region_domains.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- In Region Domains: -->
+                        <p v-if="synset.in_region_domains.length > 0"><b>In Region Domains:</b>
+                            <span v-for='(key, index) in synset.in_region_domains'>
+                                <span class='primary-link' 
+                                    @click="get_synset(key)"
+                                >[[key]]</span><span 
+                                    v-if='index < synset.in_region_domains.length - 1'
+                                    class='list-divider'
+                                >; </span>
+                            </span>
+                        </p>
+
+                        <!-- Member Holonyms -->
+                        <p v-if="synset.member_holonyms.length > 0"><b>Member Holonyms:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.member_holonyms'>[[key]]<span v-if='index < synset.member_holonyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span>
+                            
+                        </p>
+
+                        <!-- Member Meronyms -->
+                        <p v-if="synset.member_meronyms.length > 0"><b>Member Meronyms:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.member_meronyms'>
+                                [[key]]<span v-if='index < synset.member_meronyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span><span> </span>
+                            
+                        </p>
+
+                        <!-- Part Holonyms -->
+                        <p v-if="synset.part_holonyms.length > 0"><b>Part Holonyms:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.part_holonyms'>[[key]]<span v-if='index < synset.part_holonyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span>
+                            
+                        </p>
+
+                        <!-- Part Meronyms -->
+                        <p v-if="synset.part_meronyms.length > 0"><b>Part Meronyms:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.part_meronyms'>
+                                [[key]]<span v-if='index < synset.part_meronyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span><span> </span>
+                            
+                        </p>
+
+                        <!-- Substance Holonyms -->
+                        <p v-if="synset.substance_holonyms.length > 0"><b>Substance Holonyms:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.substance_holonyms'>[[key]]<span v-if='index < synset.substance_holonyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span>
+                            
+                        </p>
+
+                        <!-- Substance Meronyms -->
+                        <p v-if="synset.substance_meronyms.length > 0"><b>Substance Meronyms:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.substance_meronyms'>
+                                [[key]]<span v-if='index < synset.substance_meronyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span><span> </span>
+                            
+                        </p>
+
+                        <!-- Instance Hypernymns -->
+                        <p v-if="synset.instance_hypernyms.length > 0"><b>Instance Hypernymns:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.instance_hypernyms'>[[key]]<span v-if='index < synset.instance_hypernyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span>
+                            
+                        </p>
+
+                        <!-- Instance Hyponymns -->
+                        <p v-if="synset.instance_hyponyms.length > 0"><b>Instance Hyponymns:</b>
+                            <span class='primary-link'
+                            @click="get_synset(key)"
+                            v-for='(key, index) in synset.instance_hyponyms'>
+                                [[key]]<span v-if='index < synset.instance_hyponyms.length - 1'
+                                class='list-divider'>; </span>
+                            </span><span> </span>
+                            
+                        </p>
+
+                    </div>
+                </div>
+
+                <div id='hyponyms-container' class='nyms-container'>
+                    <div v-for="(hyponym, index) in synset.hyponyms" class='hyponym-container nym-container' @click="get_synset(hyponym)"
+                    :id="'hyponym-'+index">
+                        <span class='hyponym nym'>[[hyponym]]</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id='link-container'
+            :style="{height:getHeight('node-container') + 'px'}">
+                <svg id='link-svg' xmlns="http://www.w3.org/2000/svg">
+
+                    <line v-for='(hyponym, index) in synset.hyponyms'
+                          :x1="getX('hyponym-'+index)"
+                          :y1="getY('hyponym-'+index)"
+                          :x2="getX('synset-inner')"
+                          :y2="getY('synset-inner')"
+                          strokeWidth = "2"
+                          stroke="#cccccc88"></line>
+
+                    <line v-for='(hypernym, index) in synset.hypernyms'
+                          :x1="getX('hypernym-'+index)"
+                          :y1="getY('hypernym-'+index)"
+                          :x2="getX('synset-inner')"
+                          :y2="getY('synset-inner')"
+                          strokeWidth = "2"
+                          stroke="#cccccc88"></line>
+                </svg>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <!-- Search Results -->
+    <div id="results-container" class='main-container'
+         v-if="mode=='search'">
+
+        <h3 class='subtitle'>Results</h3>
+
+        <div>
+
+            <div class='search-result-container' v-for="result in results"
+                 @click='get_synset(result.name)'>
+
+                <div class='search-result-title'>
+                    [[result.name]]
+                </div>
+                <div class="definition">
+                    [[result.definition]]
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script src="{% static 'gist/js/wordnet.js' %}"></script>
+
+
+{% endblock %}

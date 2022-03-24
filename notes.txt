@@ -1,0 +1,40 @@
+
+
+Most common attributes:
+
+[('definition', 117659), [X]
+ ('hypernym_distances', 117659), # (hnym, dist); Implicitly represented in breadcrumb
+ ('hypernym_paths', 117659),  # (hnym, dist); Only first represented
+ ('lemma_names', 117659),  [X] 
+ ('lemmas', 117659), # Not included, ids for lemmas
+ ('lexname', 117659),  # noun.location, not included
+ ('name', 117659),  [X]  # id for synset
+ ('offset', 117659),  # ?
+ ('pos', 117659),  [X]  # Include w/ dict to hr?
+ ('root_hypernyms', 117659), # Implicitly included in breadcrumb
+ ('max_depth', 95322),  # Min depth of synset node, Not included
+ ('min_depth', 95322),  # Max depth of synset node, Not included
+ ('hypernyms', 87597),  [X]
+ ('examples', 32923), [X]  # Example usages of lemma
+ ('hyponyms', 20008),  [X]
+ ('frame_ids', 13767), [ ]  # Include in future version?
+ ('similar_tos', 13205), [X]
+ ('member_holonyms', 12201), [X]
+ ('part_holonyms', 7859), [X]
+ ('instance_hypernyms', 7730), [X]
+ ('topic_domains', 6428), [X]
+ ('member_meronyms', 5553), [X]
+ ('part_meronyms', 3699), [X]
+ ('verb_groups', 1498), [ ]
+ ('also_sees', 1334), [X]
+ ('region_domains', 1282), [X]
+ ('instance_hyponyms', 945), [X]
+ ('attributes', 940), [X]
+ ('usage_domains', 933), [X]
+ ('substance_meronyms', 666), [X]
+ ('substance_holonyms', 551), [X]
+ ('in_topic_domains', 438), [X]
+ ('entailments', 390), [X]
+ ('causes', 218), [X]
+ ('in_region_domains', 166), [X]
+ ('in_usage_domains', 29)] [X]

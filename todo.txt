@@ -1,0 +1,145 @@
+https://github.com/peter3125/enhanced-subject-verb-object-extraction
+
+Wordnet
+
+- Port code over from coreference [X]
+- Localise dependencies [X]
+- make container clickable [X]
+
+- CSS
+    - horizontal margin [X]
+    - sub-headers for synsets [X]
+    - selected synset
+        - box-shadow & border [X]
+        - info [X]
+
+
+- Search [X]
+    - view [X]
+    - results [X]
+        - html [X]
+        - js [X]
+    - click result [X]
+    - search on enter [X]
+    - loading indicator for search [X]
+
+- navbar [X]
+    - primary & secondary color [X]
+    - menu buttons [X]
+
+- Refactor
+    - separate js [X]
+
+- CSS
+    - make it look ntc-y [X]
+    - lines (papernet?) [X]
+
+
+- Breadcrumbs for parents
+    - clickable [X]
+
+- More data for synsets [ ]
+    - attributes, also see etc [X]
+        - views [X]
+        - code to get examples of attributes
+        - js [ ]
+            name [X]
+            definition [X]
+            examples [X]
+            lemma [X]
+            lemmas [X]
+            pos [X]
+                - get all pos [X]
+                - write dict [X]
+                - transform in python [X]
+            attributes [X]
+            causes [X]
+            entailments [X]
+            similar_tos [X]
+            also_sees': [X],
+            'topic_domains': [X],
+            'in_topic_domains': [X],
+            'usage_domains': [X],
+            'in_usage_domains': [X],
+            'region_domains': [X],
+            'in_region_domains': [X],
+            'member_holonyms': [X],
+            'member_meronyms': [X],
+            'part_holonyms': [X],
+            'part_meronyms': [X],
+            'instance_hypernyms': [ ],
+            'instance_hyponyms': [ ],
+            'substance_holonyms': [X],
+            'substance_meronyms': [X],
+    - make most common attributes always visible, even if empty [X]
+
+- change URL to "Wordnet" [X]
+- Change navbar to Wordnet Explorer [X]
+
+- Push & send to Sean [ ]
+
+- tweet [ ]
+
+- add to website [ ]
+
+-----------------------------------
+
+v2
+--
+
+- error handle server errors [ ]
+
+- URL tracking of lemma [ ]
+- URL route to lemmas [ ]
+
+- Increase width (esp of net)? [ ]
+
+
+- refactor [ ]
+    - separate wordnet & gist code [ ]
+
+- add about page[ ]
+    - what?
+    - why?
+    - who? 
+
+- Explainers for attributes [ ]
+
+- Reveal/conceal when too many attribute values [ ]
+
+- autosuggest [ ]
+    - loading indicator for autosuggest [ ]
+
+- More preview info on child nodes
+    - no. children & descendents
+
+- Show history of tree [ ]
+    - scroll around and see parents and siblings of selected nodes.
+
+- distances between two nodes [ ]
+    - allow users to search for two nodes at once [ ]
+    - show tree from one to the other [ ]
+
+- navbar
+    - redo with google mdc?
+    - underlines for active menu options [ ]
+
+- hypernym distances vs hypernyms (?) [ ]
+
+- push & tweet [ ]
+
+
+v3
+--
+
+- Mobile view [ ]
+
+- User accounts [ ]
+
+- Overview of how frequent different attributes are [ ]
+
+- go straight to result if only one match [ ]
+
+- animate click transitions [ ]
+
+- framenet [ ]

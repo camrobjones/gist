@@ -1,0 +1,99 @@
+
+
+/* Doc */
+
+.sent-container {
+    border: 1px solid #ccc;
+    display: flex;
+    padding: 10px 5px;
+}
+
+.sentence-index {
+    padding: 0 10px;
+    /* background: #ccc; */
+    border: 1px solid #3e70ff;
+    border-radius: 4px;
+    padding-top: 3px;
+    margin-right: 10px;
+}
+
+/* Token */
+
+.token-container {
+    padding: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+.token-info-container {
+    display: none;
+    box-shadow: 1px -1px 5px 1px #00000033;
+    border-radius: 4px;
+    position: absolute;
+    background: white;
+    top: 10px;
+    left: 100%;
+    z-index: 10;
+    padding: 5px 10px;
+    min-width:300px;
+}
+
+.token-container:hover .token-info-container {
+    display:block;
+}
+
+.token-info-item {
+    display: flex;
+}
+
+span.token-title {
+    color: var(--primary);
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+}
+
+.token-info-item-section {
+    border-top: 1px solid #00000033;
+    margin: 5px 0px;
+    padding: 5px 0px;
+}
+
+.token-info-section-header {
+    font-weight: 600;
+}
+
+.token-info-synset-name {
+    font-weight: 200;
+}
+
+.token-info-wordnet-synset {
+    padding-left: 5px;
+    margin-bottom: 5px;
+}
+
+.token-info-synset-definition {
+    font-style: italic;
+    padding-left: 5px;
+}
+
+.token-info-subsection {
+    padding-left: 5px;
+}
+
+.token-info-synset-example {
+    padding-left: 5px;
+    font-size: 0.8rem;
+}
+
+.token-info-section-subheader {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+strong.token-info-item-label {
+    margin-right: 5px;
+}
+
+.col {
+    text-align: center;
+}
