@@ -10,5 +10,8 @@ urlpatterns = [
     path('analyse', views.analyse),
     path('wordnet', views.wordnet_home),
     path('synset_data', views.synset_data),
-    path('search_lemma', views.search_lemma)
+    path('search_lemma', views.search_lemma),
+
+    path('synspaces', views.synspaces_home),
+    path('synspaces_search', views.synspaces_search)
 ]

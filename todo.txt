@@ -1,6 +1,161 @@
 https://github.com/peter3125/enhanced-subject-verb-object-extraction
 
+Ideas
+-----
+
+- LLM attention visualizer [ ]
+- Sentence parser
+    - type in a sentence and see
+        - syntactic parse [ ]
+        - similar words in space [ ]
+        - rephrases [ ]
+        - synonyms [ ]
+
+
+Synspaces
+---------
+
+v0
+--
+- 2d space [X]
+- cleanup for django
+    - functions [X]
+    - lazyload embeddings [X]
+- views [X]
+    - home [X]
+    - get_synspaces api [X]
+- template [X]
+    - vega map [X]
+- multiple queries [X]
+    - word_embedding func [X]
+
+- improve wordlist
+    - lemmatize inputs w/ spacy  [-]
+        - some tags are bad. wordnet seems lemmatized enough
+    - use wordnet lemmas? [X]
+
+
+v1
+---
+git clone https://github.com/stanfordnlp/glove
+cd glove && make
+./demo.sh
+
+- parameterize embeddings [X]
+
+- color query red, others grey [X]
+- use whole space [X]
+
+- glove [X]
+    - include own word [X]
+    - 6B, 42B, 840B [X]
+    - make wordnet lists [X]
+    - vary wordnet on/off [X]
+        - I thought we comitted to wordnet?
+
+- expose args
+    - n [X]
+    - dimred [X]
+    - dist metric [X]
+
+- multiple words [ ]
+    - work 4 bert [X]
+        - work with 0 queries [X]
+        - guarantee inclusion of words [X]
+        - bert change model query layer [X]
+    - glove
+        - don't double include words [X]
+    - linebreak flex [X]
+
+    - cancel all [X]
+    - click to add to query [X]
+
+
+- add max n [X]
+- euclidean glove bug [X]
+
+- spinner while running [X]
+
+
+- cleanup & push [ ]
+    - quick bit of menu admin to merge with Wordnet [X]
+    - pare down model names [X]
+    - add model files to gitignore [X]
+        - upload them via ssh [ ]
+        - yeah this is all terrible, we will refactor [X]
+    
+
+    - share w/ Sean & Oisin [ ]
+
+
+v1.1
+----
+
+- params at side? [ ]
+- figue out issue w/ layer 0
+- frequency param [ ]
+- update URL to store search [ ]
+
+v1.5
+----
+
+game
+    - Randomly generated word [ ]
+    - guesses and mystery word appear on map [ ]
+
+tip of my tongue [ ]
+
+tooltip
+    - x, y, link to wordnet [ ]
+
+
+
+v2
+--
+
+- refactor to use classes [ ]
+- refactor creation
+    - write a plan for how to run, store, load etc models
+        - like a filesystem convention? a DB?
+        - Or is this all putting structure before content? Like get a v0 working with minimal structure then plan & refactor before release?
+    - section for models
+    - create_and_save_embeddings()
+        - separate file?
+    - load_embeddings
+    - load_wordlist
+    - load_model
+
+- query vs context
+    - add queries to a query (search for centroid of vectors)
+    - or add to context (show on map but don't search)
+
+- download/save graph [ ]
+
+viz
+    - panzoom [ ]
+    - 3D [ ]
+
+
+- synonym lists [ ]
+
+- more models (?)
+    - spacy [ ]
+    - word2vec [ ]
+    - gpt2 [ ]
+
+- evaluation code
+    - get a set of synonyms
+
+- css
+
+- get context sentences for words
+- more LLM features
+    - trace movement of a sentence through space
+
+
+
 Wordnet
+-------
 
 - Port code over from coreference [X]
 - Localise dependencies [X]
@@ -76,7 +231,7 @@ Wordnet
 - change URL to "Wordnet" [X]
 - Change navbar to Wordnet Explorer [X]
 
-- Push & send to Sean [ ]
+- Push & send to Sean [X]
 
 - tweet [ ]
 

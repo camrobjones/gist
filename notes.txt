@@ -38,3 +38,8 @@ Most common attributes:
  ('causes', 218), [X]
  ('in_region_domains', 166), [X]
  ('in_usage_domains', 29)] [X]
+
+
+ Synspaces:
+
+ - Only use wordnet as the wordlist. So we can venture into senses etc.

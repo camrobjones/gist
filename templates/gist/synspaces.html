@@ -1,0 +1,158 @@
+{% extends "gist/base.html" %}
+
+{% block content %}
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'gist/css/synspaces.css' %}">
+<link rel="stylesheet" href="{% static 'gist/css/gist.css' %}">
+
+<!-- Vega -->
+<script src="{% static 'vega/vega.js' %}"></script>
+<script src="{% static 'vega/vega-embed.js' %}"></script>
+
+
+<div id='app'>
+
+    <nav class="navbar navbar-expand-md" id="navbar">
+      <a class="navbar-brand" href="/gist/">Gist</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- <span class="navbar-toggler-icon"></span> -->
+        <i class="material-icons" id='nav-burger'>menu</i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/gist/wordnet">Wordnet Explorer</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link active" href="/gist/synspaces">Synspaces</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="main-container">
+
+      <!-- Query Row -->
+      <div class="form-row" id='query-row'>
+
+        <!-- Query bar -->
+         <div class="form-group col-md-10">
+           <div class="input-group" id="query-input">
+             <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Query</span>
+             </div>
+             <input class="form-control shadow-none" type="search" placeholder="Enter query term" aria-label="Search" v-model="query" @keyup.enter="searchLemma">
+             <div class="input-group-append">
+               <button class="btn btn-success" type="button" @click="addQuery">+</button>
+             </div>
+             <div class="input-group-append">
+               <button class="btn btn-danger" type="button" @click="clearQuery">X</button>
+             </div>
+           </div>
+
+         </div>
+
+         <div class="form-group col-md-2">
+          <button class="btn btn-primary" type="button" @click="searchLemma">Search</button>
+         </div>
+
+         <!-- Loading spinner -->
+           <div id="loading-container" class='main-container' 
+                v-if="status=='searching'">
+            <div id = "loading-spinner" class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+           </div>
+
+      </div>
+
+      <div id="querybox">
+
+          <div v-for='(query, idx) in queries' class='query-card-container'>
+            <div class='query-card'>[[query]]</div>
+            <div class='close-query-card' @click="removeQuery(idx)">X</div>
+          </div>
+
+      </div>
+
+    </div>
+
+          <!-- <button id="search-btn" class="btn btn-outline-success my-2 my-sm-0" type="button" @click="searchLemma">Go</button> -->
+
+    <div class='main-container' id="results">
+
+    </div>
+
+    <div class='main-container' id="parameters">
+
+
+      <div class="form-row">
+
+        <div class="form-group col-md-6">
+         <label for="inputPassword4">Embeddings</label>
+         <select name="embeddings_key" v-model="embeddings_key" class="form-control">
+          <option v-for="(item, index) in parameters.embeddings_keys" 
+            :value="item" 
+            :key="index">
+              [[item]]
+          </option>
+
+        </select>
+       </div>
+
+       <div class="form-group col-md-6">
+         <label for="">No. Results</label>
+         <input name="n" v-model="n" class="form-control" type="number"
+         max="200">
+        </select>
+       </div>
+
+     </div>
+
+     <div class="form-row">
+
+        <div class="form-group col-md-6">
+         <label for="inputPassword4">Dimensionality Reduction</label>
+         <select name="dimred" v-model="dimred" class="form-control">
+          <option value="pca">PCA</option>
+          <option value="fa">Factor Analysis</option>
+          <option value="cosine_pca">Cosine PCA</option>
+          <option value="tsne">t-SNE</option>
+          <option value="tsne">Cosine t-SNE</option>
+          <option value="isomap">Isomap</option>
+          <option value="mds">MDS</option>
+        </select>
+       </div>
+
+
+        <div class="form-group col-md-6">
+         <label for="inputPassword4">Distance Metric</label>
+         <select name="dimred" v-model="metric" class="form-control">
+          <option value="euclidean">Euclidean</option>
+          <option value="cosine">Cosine</option>
+        </select>
+       </div>
+
+
+     </div>
+
+    </div>
+
+    
+
+
+</div>
+
+<script>
+
+const embeddings_keys = {{embeddings_keys | safe}}
+
+</script>
+
+<script src="{% static 'gist/js/synspaces.js' %}"></script>
+
+
+{% endblock %}

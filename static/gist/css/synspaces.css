@@ -1,0 +1,98 @@
+
+/* Variables */
+
+:root {
+  --primary: #ff8500; 
+  --primary-20: #ff8500cc; 
+  --secondary: #7200c3;
+  --bg: #0000000a;
+  --fg: white;
+  --shadow: #00000033;
+  --darkish: #555555;
+  --dark: #333333;
+  --darker: #222222;
+  --darkest: #111111;
+  --light: #e2e2e2;
+  --save: #42ba4f;
+
+}
+
+/* General */
+
+/* Loading */
+
+#loading-container {
+    position: absolute;
+    left: 100%;
+}
+
+#loading-spinner {
+    color: var(--blue);
+    font-size: 10px;
+    width: 3em;
+    height: 3em;
+    margin: 3px -7px;
+}
+
+
+/* ==== Query ==== */
+
+.query-card {
+    background: white;
+    padding: 8px 10px;
+    border-radius: 8px 0px 0px 8px;
+    display: inline-block;
+}
+
+.query-card-container {
+    display: inline-flex;
+    border: 1px solid #cccccc47;
+    border-radius: 8px;
+    /* box-shadow: 1px 1px 2px 1px #0000001a, inset 1px 1px 2px 2px #00000000; */
+    /* box-shadow: inset 1px 1px 2px 2px #0000001a; */
+    margin: 0 5px 15px 5px;
+}
+
+.close-query-card {
+    border-radius: 0px 8px 8px 0px;
+    /* border: 1px solid #cccccc; */
+    display: flex;
+    vertical-align: middle;
+    padding: 8px;
+    background: #c2e7ff;
+    box-shadow: inset -2px 0px 2px 0px #4d90ff21;
+    color: #00000091;
+    cursor: pointer;
+}
+
+.close-query-card:hover {
+    background: #27a7fa;
+    color: #fff;
+}
+
+div#query-row {
+    margin-top: 15px;
+    position:relative;
+}
+
+div#querybox {
+    display: flex;
+    align-items: revert;
+    justify-content: flex-start;
+    flex-flow: wrap;
+    margin-left: -5px;
+    position:relative;
+}
+
+div#clear {
+    position:absolute;
+    right:0;
+}
+
+div#parameters {
+    margin-top: 20px;
+}
+
+.query-card-container:nth-child(1) {
+/*    margin-left: 0;*/
+}

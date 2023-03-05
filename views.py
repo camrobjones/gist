@@ -8,6 +8,8 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 import spacy
 
+from gist import synspaces
+
 """
 Constants
 ---------
@@ -287,5 +289,45 @@ def search_lemma(request):
     lemma = request.GET.get("lemma")
     print(lemma)
     data = get_wordnet_data(lemma)
+    return HttpResponse(json.dumps(data),
+                        content_type='application/json')
+
+
+"""
+Synspaces
+"""
+
+def get_embeddings_keys():
+    """TODO: Store these somewhere special and walk to find them."""
+    return ["glove_6B", "glove_42B", "glove_840B",
+        "glove_6B_wordnet", "glove_42B_wordnet", "glove_840B_wordnet",
+        "bert_l0_wordnet", "bert_l6_wordnet",
+        "bert_l11_wordnet", "bert_l12_wordnet",]
+
+def synspaces_home(request):
+    """Return synspace home view."""
+    embeddings_keys = get_embeddings_keys()
+
+    context = {
+        "embeddings_keys": embeddings_keys
+    }
+
+    return render(request, 'gist/synspaces.html', context)
+
+def synspaces_search(request):
+    """Return JSON obj with info about lemma.
+
+    Args:
+        request (HttpRequest)
+    """
+    queries = request.GET.get("queries[]")
+    print(queries)
+    embeddings_key = request.GET.get("embeddings_key", "bert_l11")
+    n = min(int(request.GET.get("n", 20)), 200)
+    dimred = request.GET.get("dimred", "pca")
+    metric = request.GET.get("metric", "cosine")
+    data = synspaces.get_synspace(queries=queries, embeddings_key=embeddings_key, n=n, dimred=dimred, metric=metric)
+
+    print(data)
     return HttpResponse(json.dumps(data),
                         content_type='application/json')

@@ -1,12 +1,15 @@
-{% extends 'gist/base.html' %}
-{% load static %}
+{% extends "gist/base.html" %}
 
 {% block content %}
 
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'gist/css/gist.css' %}">
+
 <div id='app'>
 
-    <nav class="navbar navbar-expand-md">
-      <a class="navbar-brand" href="#">Gist</a>
+    <nav class="navbar navbar-expand-md" id="navbar">
+      <a class="navbar-brand" href="/gist/">Gist</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <!-- <span class="navbar-toggler-icon"></span> -->
         <i class="material-icons" id='nav-burger'>menu</i>
@@ -14,166 +17,43 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <li class="nav-item">
+            <a class="nav-link" href="/gist/wordnet">Wordnet Explorer</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
+            <a class="nav-link" href="/gist/synspaces">Synspaces</a>
           </li>
         </ul>
-        <div class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Text" aria-label="Search" v-model="query">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="button" @click="analyse">Analyse</button>
-        </div>
       </div>
     </nav>
 
-    <!-- Doc -->
-    <div id='doc-container'>
+    <div id="card-container" class="main-container">
 
-        <!-- Sent -->
-        <div v-for='(sent, sentid) in doc' class="sent-container">
-
-            <div class='sentence-index'>
-                Sentence [[sentid+1]]
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Wordnet Explorer</h5>
+              <p class="card-text">A web interface for Princeton's Wordnet: A database of semantic relations between words.</p>
+              <a href="/gist/wordnet" class="btn btn-primary">Explore</a>
             </div>
-
-            <!-- Token -->
-            <div v-for='token in sent' class='token-container'>
-
-                <span class="token-literal">[[token.orth]]</span>
-
-                <!-- Token Info -->
-                <div class='token-info-container'>
-                    <div class='token-info'>
-                        <span class='token-title'>
-                            [[token.orth]]
-                        </span>
-
-                        <div class='token-info-item-section'>
-
-                            <div class='token-info-item'>
-                                <strong class='token-info-item-label'>Index:</strong>
-                                <span class='token-info-item-value'>[[token.idx]]</span>
-                            </div>
-
-                            <div class='token-info-item'>
-                                <strong class='token-info-item-label'>Lemma:</strong>
-                                <span class='token-info-item-value'>[[token.lemma]]</span>
-                            </div>
-
-                            <div class='token-info-item'>
-                                <strong class='token-info-item-label'>POS:</strong>
-                                <span class='token-info-item-value'>[[token.pos]]</span>
-                            </div>
-
-                            <div class='token-info-item'>
-                                <strong class='token-info-item-label'>Tag:</strong>
-                                <span class='token-info-item-value'>[[token.tag]]</span>
-                            </div>
-
-                        </div>
-
-                        <!-- Wordnet -->
-                        <div class='token-info-item-section'>
-
-                            <div class="token-info-section-header">
-                                Wordnet
-                            </div>
-
-                            <div class='token-info-wordnet-synset' v-for="synset in token.wordnet">
-
-                                <div class='token-info-synset-name'>
-                                    [[synset.name]] ([[synset.lemma]])
-                                </div>
-
-                                <div class='token-info-synset-definition'>
-                                    [[synset.definition]]
-                                </div>
-
-                                <div class='token-info-subsection'>
-
-                                    <div class='token-info-section-subheader'>
-                                        Examples
-                                    </div>
-                                    <div v-for='example in synset.examples'
-                                         class='token-info-synset-example'>
-                                        "[[example]]"
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <!-- End Wordnet -->
-
-                    </div>
-
-                </div>
-
-            </div>
-            <!-- End Token -->
-
+          </div>
         </div>
-        <!-- End Sent -->
-
-    </div> 
-    <!-- End Doc -->
-
-        <div class="sent-tree" v-for='treesent in tree'>
-
-            <div class="tree-data" v-html="totree(treesent)">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Synspaces</h5>
+              <p class="card-text">Visualize semantic spaces learned by word embedding models.</p>
+              <a href="/gist/synspaces" class="btn btn-primary">Explore</a>
             </div>
-
+          </div>
         </div>
+      </div>
 
-
-        <div class='row'>
-            <div class='col'>
-
-                <div class='row'>
-                    <div class='col'>
-                        is
-                    </div>
-                </div>
-
-                <div class='row'>
-                    <div class='col'>
-                        this
-                    </div>
-
-                    <div class='col'>
-                        <div class='row'>
-                            <div class='col'>
-                                sentence
-                            </div>
-                        </div>
-
-                        <div class='row'>
-                            <div class='col'>
-                                a
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
+    
 
 
 </div>
-
-<script src="{% static 'gist/js/home.js' %}"> </script>
 
 {% endblock %}

@@ -1,0 +1,10 @@
+Django
+nltk
+numpy
+pandas
+scikit_learn
+scipy
+spacy
+torch
+tqdm
+transformers
