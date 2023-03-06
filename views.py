@@ -7,8 +7,10 @@ from nltk import Tree
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 import spacy
+from django_celery_results.models import TaskResult
+from celery.result import AsyncResult
 
-from gist import synspaces
+from gist import synspaces, tasks
 
 """
 Constants
@@ -322,12 +324,42 @@ def synspaces_search(request):
     """
     queries = request.GET.get("queries[]")
     print(queries)
-    embeddings_key = request.GET.get("embeddings_key", "bert_l11")
+    embeddings_key = request.GET.get("embeddings_key", "bert_l11_wordnet")
     n = min(int(request.GET.get("n", 20)), 200)
     dimred = request.GET.get("dimred", "pca")
     metric = request.GET.get("metric", "cosine")
-    data = synspaces.get_synspace(queries=queries, embeddings_key=embeddings_key, n=n, dimred=dimred, metric=metric)
 
-    print(data)
+    task = tasks.get_synspace.delay(
+        queries=queries,
+        embeddings_key=embeddings_key,
+        n=n,
+        dimred=dimred,
+        metric=metric)
+    # data = synspaces.get_synspace(queries=queries, embeddings_key=embeddings_key, n=n, dimred=dimred, metric=metric)
+
+    print(task)
+    data = {"success": True, "task_id": task.id}
     return HttpResponse(json.dumps(data),
                         content_type='application/json')
+
+
+def get_progress(request, task_id):
+    print(task_id)
+    result = AsyncResult(task_id)
+    status = result.state
+
+    if (status == "SUCCESS"):
+        result = TaskResult.objects.get(task_id=task_id)
+        response_data = {
+            'status': result.status,
+            'details': result.result
+        }
+    else:
+        response_data = {
+            'state': status,
+            'details': result.info,
+        }
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type='application/json'
+    )

@@ -147,6 +147,7 @@ viz
     - get a set of synonyms
 
 - css
+    - bootstrap 5
 
 - get context sentences for words
 - more LLM features

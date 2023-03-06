@@ -273,9 +273,26 @@ var app = new Vue({
         this.status="searching";
         axios.get(queryString).then(response => {
             console.log(response);
+            this.getProgress(response.data.task_id)
+            // this.results = response.data;
+            // this.drawVega(this.results);
+            // this.status="ready";
+        });
+    },
+
+    getProgress: function(task_id) {
+        var queryString = '/gist/get_progress/' + task_id;
+        axios.get(queryString).then(response => {
+            console.log(response);
             this.results = response.data;
-            this.drawVega(this.results);
-            this.status="ready";
+            if (this.results.status == "SUCCESS") {
+              this.drawVega(this.results.details);
+              this.status="ready";
+            } else {
+              setTimeout(function() {
+                  app.getProgress(task_id)
+                }, 500)
+            }
         });
     },
 
