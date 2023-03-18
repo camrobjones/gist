@@ -17,6 +17,7 @@ import pandas as pd
 from scipy.spatial.distance import cosine
 from sklearn import decomposition, manifold
 import torchtext
+from annoy import AnnoyIndex
 
 from gist import twl
 
@@ -29,6 +30,7 @@ EMBEDDINGS = {}
 """
 Setup
 """
+
 
 def build_wordlist(corpus="wordnet", lemmatize=0):
     """Create list of words for comparison."""
@@ -67,7 +69,85 @@ def load_wordlist(corpus="wordnet", lemmatize=True):
     return np.array(wordlist)
 
 
+"""
+Notes:
+- Glove POC before extend
+- Assume wordnet until we need other wordlists
+"""
 
+
+class EmbeddingModel():
+    """Word Embedding Model."""
+    def __init__(self, name, version, dim):
+        self.name = name
+        self.version = version
+        self.dim = dim
+        self.load()
+
+    def load(self):
+        """Load Model"""
+        raise NotImplementedError
+
+    def embed(self, query):
+        """Embed query."""
+        raise NotImplementedError
+
+class GloveEmbeddingModel(EmbeddingModel):
+    """Glove Word Embedding Model."""
+    def load(self):
+        self.model = torchtext.vocab.GloVe(name=self.version, dim=self.dim, max_vectors=0)
+
+    def embed(self, query):
+        return self.model[query]
+
+
+def load_model(name, version, dim):
+    """Load model."""
+    key = f"{name}_{version}"
+    if key not in MODELS:
+        model = GloveEmbeddingModel(name, version, dim)
+        model.load()
+        MODELS[key] = model
+
+    return MODELS[key]
+
+
+class Embeddings():
+    """Matrix of word embeddings."""
+    def __init__(self, model_name, model_version, model_dim):
+        """Initialise Embeddings."""
+        self.wordlist = load_wordlist()
+        self.model = load_model(model_name, model_version, model_dim)
+        self.create_filepath()
+
+    def create_filepath(self):
+        """Create a filepath to store the model index."""
+        self.filepath = f"gist/data/embeddings/{self.model.name}_{self.model.version}_wordnet.annoy"
+
+    def build(self, n_trees=100):
+        """Build index for embeddings."""
+        print("Building index...")
+        self.index = AnnoyIndex(self.model.dim, 'angular')
+        for i in tqdm(range(len(self.wordlist))):
+            v = self.model.embed(wordlist[i])
+            self.index.add_item(i, v)
+
+        self.index.build(n_trees)
+        self.index.save(self.filepath)
+
+    def load(self):
+        """Load Index."""
+        self.index = AnnoyIndex(self.model.dim, "angular")
+        self.index.load(self.filepath)
+
+    def nn(self, query, n=20):
+        """Get nearest neighbours to query."""
+        v = self.model.embed(query)
+        ids, dists = self.index.get_nns_by_vector(v, n, include_distances=True)
+        words = [self.wordlist[i] for i in ids]
+        vecs = [self.index.get_item_vector(i) for i in ids]
+
+        return (words, dists, vecs)
 
 def create_embeddings_tensor(wordlist, model_name, layer):
     """Create a matrix containing model embeddings for all words in wordlist."""
@@ -286,15 +366,6 @@ def dimensionality_reduction(embeddings, dimensions=2, method="pca", normalize=T
 
     return transform
 
-
-def load_glove(key="glove_42B"):
-    if key not in MODELS:
-        name = re.match("glove_([0-9]+B)", key).groups()[0]
-        print(name)
-        MODELS[key] = torchtext.vocab.GloVe(name=name, dim=300)
-
-    return MODELS[key]
-
 def most_similar_glove(queries, n=20, key="glove_42B", metric="cosine"):
     """Get the most similar words in glove."""
     glove = load_glove(key=key)
@@ -339,13 +410,15 @@ def most_similar_glove(queries, n=20, key="glove_42B", metric="cosine"):
 
     return (words, distances, result_embeddings)
 
-def get_synspace(queries, model_name="bert", embeddings_key="bert_l11_wordnet_batched", n=20,
+def get_synspace(queries, model_name="bert", embeddings_key="glove_840B_wordnet", n=20,
     dimred="pca", metric="cosine"):
     """Get most similar words to query with 2d coordinates."""
     queries = queries.split(',')
     print(queries)
     if embeddings_key.startswith("glove"):
-        words, similarities, embeddings = most_similar_glove(queries, key=embeddings_key, n=n, metric=metric)
+        embedding = Embeddings("glove", "840B", 300)
+        embedding.load()
+        words, similarities, embeddings = embedding.nn(queries[0], n=n)
     else:
         embeddings = get_embeddings(embeddings_key)
         wordlist = load_wordlist()

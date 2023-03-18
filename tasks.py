@@ -2,7 +2,8 @@ from celery import shared_task
 
 from gist import synspaces
 
-@shared_task
+# explore bind=True?
+@shared_task()
 def get_synspace(queries, model_name="bert", embeddings_key="bert_l11_wordnet", n=20,
     dimred="pca", metric="cosine"):
 	"""Task that calls synspaces.get_synspace."""

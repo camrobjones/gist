@@ -329,24 +329,24 @@ def synspaces_search(request):
     dimred = request.GET.get("dimred", "pca")
     metric = request.GET.get("metric", "cosine")
 
-    task = tasks.get_synspace.delay(
-        queries=queries,
-        embeddings_key=embeddings_key,
-        n=n,
-        dimred=dimred,
-        metric=metric)
-    # data = synspaces.get_synspace(queries=queries, embeddings_key=embeddings_key, n=n, dimred=dimred, metric=metric)
+    # task = tasks.get_synspace.delay(
+    #     queries=queries,
+    #     embeddings_key=embeddings_key,
+    #     n=n,
+    #     dimred=dimred,
+    #     metric=metric)
+    data = synspaces.get_synspace(queries=queries, embeddings_key=embeddings_key, n=n, dimred=dimred, metric=metric)
 
-    print(task)
-    data = {"success": True, "task_id": task.id}
+    # print(task)
+    # data = {"success": True, "task_id": task.id}
     return HttpResponse(json.dumps(data),
                         content_type='application/json')
 
 
 def get_progress(request, task_id):
     print(task_id)
-    result = AsyncResult(task_id)
-    status = result.state
+    result = TaskResult.objects.get(task_id=task_id)
+    status = response.status
 
     if (status == "SUCCESS"):
         result = TaskResult.objects.get(task_id=task_id)
@@ -357,7 +357,7 @@ def get_progress(request, task_id):
     else:
         response_data = {
             'state': status,
-            'details': result.info,
+            'details': result.result,
         }
     return HttpResponse(
         json.dumps(response_data),

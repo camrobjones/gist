@@ -273,10 +273,10 @@ var app = new Vue({
         this.status="searching";
         axios.get(queryString).then(response => {
             console.log(response);
-            this.getProgress(response.data.task_id)
-            // this.results = response.data;
-            // this.drawVega(this.results);
-            // this.status="ready";
+            // this.getProgress(response.data.task_id)
+            this.results = response.data;
+            this.drawVega(this.results);
+            this.status="ready";
         });
     },
 
