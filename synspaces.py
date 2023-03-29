@@ -117,17 +117,20 @@ class Embeddings():
     def __init__(self, model_name, model_version, model_dim):
         """Initialise Embeddings."""
         self.wordlist = load_wordlist()
-        self.model = load_model(model_name, model_version, model_dim)
+        self.model_name = model_name
+        self.model_version = model_version
+        self.model_dim = model_dim
+        # self.model = load_model(model_name, model_version, model_dim)
         self.create_filepath()
 
     def create_filepath(self):
         """Create a filepath to store the model index."""
-        self.filepath = f"gist/data/embeddings/{self.model.name}_{self.model.version}_wordnet.annoy"
+        self.filepath = f"gist/data/embeddings/{self.model_name}_{self.model_version}_wordnet.annoy"
 
     def build(self, n_trees=100):
         """Build index for embeddings."""
         print("Building index...")
-        self.index = AnnoyIndex(self.model.dim, 'angular')
+        self.index = AnnoyIndex(self.model_dim, 'angular')
         for i in tqdm(range(len(self.wordlist))):
             v = self.model.embed(wordlist[i])
             self.index.add_item(i, v)
@@ -137,12 +140,16 @@ class Embeddings():
 
     def load(self):
         """Load Index."""
-        self.index = AnnoyIndex(self.model.dim, "angular")
+        self.index = AnnoyIndex(self.model_dim, "angular")
         self.index.load(self.filepath)
+
+    def embed(self, query):
+        """Get embedding for query."""
 
     def nn(self, query, n=20):
         """Get nearest neighbours to query."""
-        v = self.model.embed(query)
+        ix = np.where(self.wordlist == query)[0][0]
+        v = self.index.get_item_vector(ix)
         ids, dists = self.index.get_nns_by_vector(v, n, include_distances=True)
         words = [self.wordlist[i] for i in ids]
         vecs = [self.index.get_item_vector(i) for i in ids]

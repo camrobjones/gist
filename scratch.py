@@ -148,3 +148,43 @@ def run(n):
 
 cnt = run(30)
 
+import torch
+from annoy import AnnoyIndex
+from tqdm import tqdm
+
+from gist.synspaces import load_wordlist, load_glove
+
+wordlist = load_wordlist()
+glove = load_glove(key="glove_840B")
+
+f = 300
+t = AnnoyIndex(f, 'angular')
+embeddings_tensor = torch.stack([glove[w] for w in wordlist])
+
+for i in tqdm(range(len(embeddings_tensor))):
+    v = embeddings_tensor[i]
+    t.add_item(i, v)
+
+t.build(100)
+t.save("gist/data/embeddings/glove_840B_wordnet.annoy")
+
+u = AnnoyIndex(f, "angular")
+u.load("gist/data/embeddings/glove_840B_wordnet.annoy")
+
+w = "obsequious"
+
+v = glove[w]
+
+ids, dists = t.get_nns_by_vector(v, 20, include_distances=True)
+
+print(list(zip([wordlist[i] for i in ids], dists)))
+
+import openai
+
+
+openai.Completion.create(
+  model="text-davinci-003",
+  prompt="Say this is a test",
+  max_tokens=7,
+  temperature=0
+)
